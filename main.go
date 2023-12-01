@@ -13,16 +13,19 @@ type SportsPlanModel struct{
 	Price float32 `json:"price" binding:"required"`
 }
 
+var SportsPlans []SportsPlanModel
+
 func main(){
 	server := gin.Default()
+	
 
-	server.GET("/data", func(ctx *gin.Context){
+	server.GET("/sportsplans", func(ctx *gin.Context){
 		ctx.JSON(200, gin.H{
-			"msg": "It's working",
+			"data": SportsPlans,
 		})
 	})
 
-	server.POST("/sportsplan", func (ctx *gin.Context)  {
+	server.POST("/sportsplans", func (ctx *gin.Context)  {
 		var data SportsPlanModel
 		err := ctx.ShouldBind(&data)
 		if err != nil{
@@ -30,7 +33,8 @@ func main(){
 				"err": fmt.Sprintf("%v", err),
 			})
 		} else{
-			ctx.JSON(http.StatusCreated, gin.H{"data": data})
+			SportsPlans = append(SportsPlans, data)
+			ctx.JSON(http.StatusCreated, gin.H{"msg": "New sportplan was added!"})
 		}
 	})
 
